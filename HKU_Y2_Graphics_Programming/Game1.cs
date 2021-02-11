@@ -16,7 +16,7 @@ namespace HKU_Y2_Graphics_Programming
 			Content.RootDirectory = "Content";
 			IsMouseVisible = true;
 
-			currentLesson = new LiveLesson1();
+			currentLesson = new LiveLesson2();
 		}
 
 		protected override void Initialize()
