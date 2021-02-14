@@ -113,18 +113,25 @@ namespace HKU_Y2_Graphics_Programming
 			20, 23, 21
 		};
 
-		private BasicEffect effect;
+		//private BasicEffect effect;
 		private Effect myEffect;
+		private Texture2D crateTexture, crateNormal;
+		Vector3 LightPosition = Vector3.Right * 2 + Vector3.Up * 2 + Vector3.Backward * 2;
 
 		public override void LoadContent(ContentManager Content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{
-			effect = new BasicEffect(graphics.GraphicsDevice);
+			//effect = new BasicEffect(graphics.GraphicsDevice);
 			myEffect = Content.Load<Effect>("LiveLesson2");
+			crateTexture = Content.Load<Texture2D>("texture_crate_0");
+			crateNormal = Content.Load<Texture2D>("texture_crate_0_normalmap");
 		}
 
 		public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{
 			GraphicsDevice device = graphics.GraphicsDevice;
+
+			float time = (float)gameTime.TotalGameTime.TotalSeconds;
+			LightPosition = new Vector3(MathF.Cos(time), 1, MathF.Sin(time)) * 2;
 
 			Vector3 cameraPos = -Vector3.Forward * 10 + Vector3.Up * 5 + Vector3.Right * 5;
 
@@ -139,7 +146,13 @@ namespace HKU_Y2_Graphics_Programming
 			//effect.Projection = Matrix.CreatePerspectiveFieldOfView((MathF.PI / 180f) * 25f, device.Viewport.AspectRatio, 0.001f, 1000f);
 			myEffect.Parameters["Projection"].SetValue(Matrix.CreatePerspectiveFieldOfView((MathF.PI / 180f) * 25f, device.Viewport.AspectRatio, 0.001f, 1000f));
 
-			effect.CurrentTechnique.Passes[0].Apply();
+			myEffect.Parameters["MainTex"].SetValue(crateTexture);
+			myEffect.Parameters["NormalTex"].SetValue(crateNormal);
+
+			myEffect.Parameters["LightPosition"].SetValue(LightPosition);
+
+			//effect.CurrentTechnique.Passes[0].Apply();
+			myEffect.CurrentTechnique.Passes[0].Apply();
 
 			device.Clear(Color.Black);
 			device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3);
