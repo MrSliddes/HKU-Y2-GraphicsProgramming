@@ -150,6 +150,7 @@ namespace HKU_Y2_Graphics_Programming
 			myEffect.Parameters["NormalTex"].SetValue(crateNormal);
 
 			myEffect.Parameters["LightPosition"].SetValue(LightPosition);
+			myEffect.Parameters["CameraPosition"].SetValue(cameraPos);
 
 			//effect.CurrentTechnique.Passes[0].Apply();
 			myEffect.CurrentTechnique.Passes[0].Apply();
