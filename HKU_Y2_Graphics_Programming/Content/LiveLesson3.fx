@@ -49,6 +49,15 @@ sampler2D MoonTextureSampler = sampler_state
     MagFilter = ANISOTROPIC;
 };
 
+TextureCube SkyTex;
+samplerCUBE SkyTextureSampler = sampler_state
+{
+    Texture = <SkyTex>;
+    MipFilter = POINT;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+};
+
 // Getting out vertex data from vertex shader to pixel shader
 struct VertexShaderOutput {
     float4 position     : SV_POSITION;
@@ -115,6 +124,15 @@ float4 MoonPS(VertexShaderOutput input) : COLOR
     return float4(max(light, 0.1) * texColor.rgb, 1);
 }
 
+float4 SkyPS(VertexShaderOutput input) : COLOR
+{
+    float3 viewDirection = normalize(input.worldPos - CameraPosition);
+
+    float3 skyColor = texCUBE(SkyTextureSampler, viewDirection).rgb;
+
+    return float4(pow(skyColor, 2), 1);
+}
+
 technique Earth
 {
     pass
@@ -130,5 +148,14 @@ technique Moon
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL MoonPS();
+    }
+};
+
+technique Sky
+{
+    pass
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL SkyPS();
     }
 };

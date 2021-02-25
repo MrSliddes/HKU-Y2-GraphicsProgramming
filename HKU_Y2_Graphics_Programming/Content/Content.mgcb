@@ -37,6 +37,25 @@
 /processorParam:TextureFormat=Color
 /build:clouds.jpg
 
+#begin cube.obj
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:cube.obj
+
 #begin day.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -49,6 +68,18 @@
 /processorParam:TextureFormat=Color
 /build:day.jpg
 
+#begin dirt_diff.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:dirt_diff.jpg
+
 #begin LiveLesson2.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -60,6 +91,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:LiveLesson3.fx
+
+#begin LiveLesson4.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:LiveLesson4.fx
 
 #begin night.jpg
 /importer:TextureImporter

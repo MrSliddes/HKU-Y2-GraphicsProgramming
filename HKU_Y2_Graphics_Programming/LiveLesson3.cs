@@ -14,8 +14,9 @@ namespace HKU_Y2_Graphics_Programming
 		private Effect myEffect;
 		Vector3 LightPosition = Vector3.Right * 2 + Vector3.Up * 2 + Vector3.Backward * 2;
 
-		Model sphere;
+		Model sphere, cube;
 		Texture2D day, night, clouds, moon;
+		TextureCube sky;
 
 		float yaw, pitch;
 		int prevX, prevY;
@@ -44,11 +45,13 @@ namespace HKU_Y2_Graphics_Programming
 			//crateTexture = Content.Load<Texture2D>("texture_crate_0");
 			//crateNormal = Content.Load<Texture2D>("texture_crate_0_normalmap");
 
-			sphere = Content.Load<Model>("uv_sphere");
 			day = Content.Load<Texture2D>("day");
 			night = Content.Load<Texture2D>("night");
 			clouds = Content.Load<Texture2D>("clouds");
 			moon = Content.Load<Texture2D>("2k_moon");
+			sky = Content.Load<TextureCube>("sky_cube");
+
+			sphere = Content.Load<Model>("uv_sphere");
 
 			foreach(ModelMesh mesh in sphere.Meshes)
             {
@@ -57,6 +60,16 @@ namespace HKU_Y2_Graphics_Programming
 					meshPart.Effect = myEffect;
                 }
             }
+
+			cube = Content.Load<Model>("cube");
+
+			foreach(ModelMesh mesh in cube.Meshes)
+			{
+				foreach(ModelMeshPart meshPart in mesh.MeshParts)
+				{
+					meshPart.Effect = myEffect;
+				}
+			}
 		}
 
 		public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
@@ -81,6 +94,7 @@ namespace HKU_Y2_Graphics_Programming
 			myEffect.Parameters["NightTex"].SetValue(night);
 			myEffect.Parameters["CloudsTex"].SetValue(clouds);
 			myEffect.Parameters["MoonTex"].SetValue(moon);
+			myEffect.Parameters["SkyTex"].SetValue(sky);
 
 			myEffect.Parameters["LightPosition"].SetValue(LightPosition);
 			myEffect.Parameters["CameraPosition"].SetValue(cameraPos);
@@ -91,13 +105,24 @@ namespace HKU_Y2_Graphics_Programming
 
 			device.Clear(Color.Black);
 
+			float slowedTime = time * 0.1f;
+
+			// Sky
+			device.RasterizerState = RasterizerState.CullNone;
+			myEffect.CurrentTechnique = myEffect.Techniques["Sky"];
+			device.DepthStencilState = DepthStencilState.None;
+			RenderModel(cube, Matrix.CreateTranslation(cameraPos));
+
+			device.DepthStencilState = DepthStencilState.Default;
+			device.RasterizerState = RasterizerState.CullCounterClockwise;
+
 			// Earth
 			myEffect.CurrentTechnique = myEffect.Techniques["Earth"];
-			RenderModel(sphere, Matrix.CreateScale(0.01f) * Matrix.CreateRotationZ(time) * Matrix.CreateRotationY(MathF.PI / 180 * 23) * World);
+			RenderModel(sphere, Matrix.CreateScale(0.01f) * Matrix.CreateRotationZ(slowedTime) * Matrix.CreateRotationY(MathF.PI / 180 * 23) * World);
 
 			// Moon
 			myEffect.CurrentTechnique = myEffect.Techniques["Moon"];
-			RenderModel(sphere, Matrix.CreateTranslation(Vector3.Down * 8) * Matrix.CreateScale(0.0033f) * Matrix.CreateRotationZ(time - time * 0.3333333f) * World);
+			RenderModel(sphere, Matrix.CreateTranslation(Vector3.Down * 8) * Matrix.CreateScale(0.0033f) * Matrix.CreateRotationZ(slowedTime - slowedTime * 0.3333333f) * World);
 		}
 
 		void RenderModel(Model m, Matrix parentMatrix)
