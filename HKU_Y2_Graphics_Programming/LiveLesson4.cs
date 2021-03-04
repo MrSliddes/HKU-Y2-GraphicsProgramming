@@ -13,7 +13,8 @@ namespace HKU_Y2_Graphics_Programming
 	{
 		
 		private Effect effect;
-		private Texture2D heightmap, dirt, dirt_norm, dirt_spec, water, foam, waterNormal;
+		private Texture2D heightmap, dirt_norm, dirt_spec, foam, waterNormal;
+		private Texture2D dirt, water, grass, rock, snow;
 		private TextureCube sky;
 		private Model cube;
 
@@ -64,7 +65,12 @@ namespace HKU_Y2_Graphics_Programming
 		public override void LoadContent(ContentManager Content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch) {
 			effect = Content.Load<Effect>("LiveLesson4");
 			heightmap = Content.Load<Texture2D>("heightmap");
+
 			dirt = Content.Load<Texture2D>("dirt_diff");
+			water = Content.Load<Texture2D>("water");
+			grass = Content.Load<Texture2D>("grass");
+			rock = Content.Load<Texture2D>("rock");
+			snow = Content.Load<Texture2D>("snow");
 
 			cube = Content.Load<Model>("cube");
 			foreach (ModelMesh mesh in cube.Meshes) {
@@ -220,6 +226,10 @@ namespace HKU_Y2_Graphics_Programming
 
 			// Textures
 			effect.Parameters["DirtTex"].SetValue(dirt);
+			effect.Parameters["WaterTex"].SetValue(water);
+			effect.Parameters["GrassTex"].SetValue(grass);
+			effect.Parameters["RockTex"].SetValue(rock);
+			effect.Parameters["SnowTex"].SetValue(snow);
 
 			// Render Sky
 			device.RasterizerState = RasterizerState.CullNone;
