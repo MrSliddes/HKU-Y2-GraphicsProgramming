@@ -14,9 +14,9 @@ namespace HKU_Y2_Graphics_Programming
 		
 		private Effect effect;
 		private Texture2D heightmap, dirt_norm, dirt_spec, foam, waterNormal;
-		private Texture2D dirt, water, grass, rock, snow;
+		private Texture2D dirt, water, grass, rock, snow, plant;
 		private TextureCube sky;
-		private Model cube;
+		private Model cube, sphere;
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct Vert : IVertexType
@@ -48,6 +48,8 @@ namespace HKU_Y2_Graphics_Programming
 			}
 		}
 
+		RenderTarget2D rt;
+
 		private Vert[] vertices;
 		private int[] indices;
 
@@ -71,6 +73,16 @@ namespace HKU_Y2_Graphics_Programming
 			grass = Content.Load<Texture2D>("grass");
 			rock = Content.Load<Texture2D>("rock");
 			snow = Content.Load<Texture2D>("snow");
+			plant = Content.Load<Texture2D>("grassplant");
+
+			sphere = Content.Load<Model>("uv_sphere");
+			foreach(ModelMesh mesh in sphere.Meshes)
+			{
+				foreach(ModelMeshPart meshPart in mesh.MeshParts)
+				{
+					meshPart.Effect = effect;
+				}
+			}
 
 			cube = Content.Load<Model>("cube");
 			foreach (ModelMesh mesh in cube.Meshes) {
@@ -80,6 +92,9 @@ namespace HKU_Y2_Graphics_Programming
 			}
 
 			GeneratePlane();
+
+			rt = new RenderTarget2D(graphics.GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight,
+				false, graphics.PreferredBackBufferFormat, graphics.PreferredDepthStencilFormat);
 		}
 
 		private void GeneratePlane(float gridSize = 8.0f, float height = 128f) {
@@ -206,6 +221,9 @@ namespace HKU_Y2_Graphics_Programming
 
 		public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch) {
 			GraphicsDevice device = graphics.GraphicsDevice;
+
+			device.SetRenderTarget(rt);
+
 			device.Clear(Color.Black);
 
 			float r = (float)gameTime.TotalGameTime.TotalSeconds;
@@ -246,6 +264,33 @@ namespace HKU_Y2_Graphics_Programming
 
 			effect.CurrentTechnique.Passes[0].Apply();
 			device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3);
+
+			device.SetRenderTarget(null);
+
+			// Render rt to screenbuffer
+			spriteBatch.Begin();
+			spriteBatch.Draw(rt, Vector2.Zero, Color.White);
+			spriteBatch.End();
+
+			// Set rt as shader variable
+
+
+			// Select new technique
+			//device.BlendState = BlendState.AlphaBlend;
+			effect.CurrentTechnique = effect.Techniques["UnlitTransparent"];
+
+			effect.Parameters["GrassTex"].SetValue(plant);
+
+			// render inside
+			device.RasterizerState = RasterizerState.CullNone;
+			device.DepthStencilState = DepthStencilState.Default;
+			RenderModel(sphere, World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 1000 + Vector3.Up * 500));
+			// render outside
+			//device.RasterizerState = RasterizerState.CullCounterClockwise;
+			//RenderModel(sphere, World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 1000 + Vector3.Up * 500));
+
+			device.BlendState = BlendState.Opaque; // Reset blendstate
+			device.RasterizerState = RasterizerState.CullCounterClockwise;
 		}
 
 		void RenderModel(Model m, Matrix parentMatrix) {
@@ -255,7 +300,7 @@ namespace HKU_Y2_Graphics_Programming
 			effect.CurrentTechnique.Passes[0].Apply();
 
 			foreach (ModelMesh mesh in m.Meshes) {
-				effect.Parameters["World"].SetValue(parentMatrix * transforms[mesh.ParentBone.Index]);
+				effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * parentMatrix);
 
 				mesh.Draw();
 			}
