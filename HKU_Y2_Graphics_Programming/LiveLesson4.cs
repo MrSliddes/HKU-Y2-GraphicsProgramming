@@ -9,14 +9,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace HKU_Y2_Graphics_Programming
 {
-	class LiveLesson4 : Lesson
+	class LiveLesson4 : Lesson // This contains lesson 4 + 5
 	{
 		
 		private Effect effect;
 		private Texture2D heightmap, dirt_norm, dirt_spec, foam, waterNormal;
 		private Texture2D dirt, water, grass, rock, snow, plant;
 		private TextureCube sky;
-		private Model cube, sphere;
+		private Model cube, sphere, airplane;
+		private Texture2D airplaneTex;
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct Vert : IVertexType
@@ -73,7 +74,7 @@ namespace HKU_Y2_Graphics_Programming
 			grass = Content.Load<Texture2D>("grass");
 			rock = Content.Load<Texture2D>("rock");
 			snow = Content.Load<Texture2D>("snow");
-			plant = Content.Load<Texture2D>("grassplant");
+			plant = Content.Load<Texture2D>("sunglasssun");
 
 			sphere = Content.Load<Model>("uv_sphere");
 			foreach(ModelMesh mesh in sphere.Meshes)
@@ -90,6 +91,16 @@ namespace HKU_Y2_Graphics_Programming
 					meshPart.Effect = effect;
 				}
 			}
+
+			airplane = Content.Load<Model>("airplane");
+			foreach(ModelMesh mesh in airplane.Meshes)
+			{
+				foreach(ModelMeshPart meshPart in mesh.MeshParts)
+				{
+					meshPart.Effect = effect;
+				}
+			}
+			airplaneTex = Content.Load<Texture2D>("airplaneTex");
 
 			GeneratePlane();
 
@@ -284,13 +295,22 @@ namespace HKU_Y2_Graphics_Programming
 			// render inside
 			device.RasterizerState = RasterizerState.CullNone;
 			device.DepthStencilState = DepthStencilState.Default;
-			RenderModel(sphere, World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 1000 + Vector3.Up * 500));
+			RenderModel(sphere, Matrix.CreateRotationY(6) * World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 1000 + Vector3.Up * 1000));
 			// render outside
 			//device.RasterizerState = RasterizerState.CullCounterClockwise;
 			//RenderModel(sphere, World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 1000 + Vector3.Up * 500));
 
 			device.BlendState = BlendState.Opaque; // Reset blendstate
 			device.RasterizerState = RasterizerState.CullCounterClockwise;
+
+			effect.Parameters["GrassTex"].SetValue(airplaneTex);
+			//effect.Parameters["AirplaneTex"].SetValue(airplaneTex);
+			RenderModel(airplane, Matrix.CreateScale(30)
+				* Matrix.CreateRotationY(4)
+				* Matrix.CreateTranslation(Vector3.Up * 700)
+				* Matrix.CreateTranslation(Vector3.Backward * 440)
+				* Matrix.CreateTranslation(Vector3.Right * 1000)
+				);
 		}
 
 		void RenderModel(Model m, Matrix parentMatrix) {

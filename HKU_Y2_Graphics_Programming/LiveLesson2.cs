@@ -122,9 +122,11 @@ namespace HKU_Y2_Graphics_Programming
 		{
 			//effect = new BasicEffect(graphics.GraphicsDevice);
 			myEffect = Content.Load<Effect>("LiveLesson2");
-			crateTexture = Content.Load<Texture2D>("texture_crate_0");
-			crateNormal = Content.Load<Texture2D>("texture_crate_0_normalmap");
-		}
+            //crateTexture = Content.Load<Texture2D>("texture_crate_0");
+            //crateNormal = Content.Load<Texture2D>("texture_crate_0_normalmap");
+            crateTexture = Content.Load<Texture2D>("Stylized_Stone_Wall_001_basecolor");
+            crateNormal = Content.Load<Texture2D>("Stylized_Stone_Wall_001_normal");
+        }
 
 		public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{

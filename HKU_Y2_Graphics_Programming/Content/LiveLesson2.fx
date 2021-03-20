@@ -73,7 +73,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     // Swizzle
     //float3 r = input.color.rrr;
-    return float4((light + spec) * texColor.rgb, 1);
+    return float4((light + spec) * texColor.rgb, 1) * 3;
 }
 
 technique

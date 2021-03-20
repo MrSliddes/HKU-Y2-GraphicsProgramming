@@ -259,6 +259,7 @@ namespace HKU_Y2_Graphics_Programming
 			effect.Parameters["SnowTex"].SetValue(snow);
 
 			effect.Parameters["Time"].SetValue(r);
+			postfx.Parameters["Time"].SetValue(r);
 
 			// Render Sky
 			device.RasterizerState = RasterizerState.CullNone;
@@ -312,7 +313,8 @@ namespace HKU_Y2_Graphics_Programming
 			spriteBatch.Draw(backBuffer, Vector2.Zero, Color.White);
 
 			// Chroma
-			postfx.CurrentTechnique = postfx.Techniques["ChromaticAberration"];
+			//postfx.CurrentTechnique = postfx.Techniques["ChromaticAberration"];
+			postfx.CurrentTechnique = postfx.Techniques["Test"];
 			device.SetRenderTarget(rt2);
 			spriteBatch.Draw(rt1, Vector2.Zero, Color.White);
 

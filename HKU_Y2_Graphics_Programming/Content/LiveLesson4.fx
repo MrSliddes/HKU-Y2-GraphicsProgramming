@@ -74,6 +74,16 @@ samplerCUBE SkyTextureSampler = sampler_state
     AddressV = Mirror;
 };
 
+TextureCube AirplaneTex;
+samplerCUBE AirplaneTextureSampler = sampler_state
+{
+    Texture = <AirplaneTex>;
+    magfilter = LINEAR;
+    minfilter = LINEAR;
+    mipfilter = LINEAR;
+    AddressU = Mirror;
+    AddressV = Mirror;
+};
 
 // Getting out vertex data from vertex shader to pixel shader
 struct VertexShaderOutput {
@@ -143,7 +153,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float3 lighting = max( dot(input.normal, LightDirection), 0.0) + Ambient;
 
     float fogAmount = clamp((d - 250) / 1500, 0, 1);
-    float3 fogColor = float3(188, 214, 231) / 255.0;
+    float3 fogColor = float3(214, 64, 54) / 255.0;
 
     // Output
     return float4(lerp(texColor * lighting, fogColor, fogAmount), 1);
@@ -165,7 +175,7 @@ VertexShaderOutput SkyVS(float4 position : POSITION, float3 normal : NORMAL, flo
 
 float4 SkyPS(VertexShaderOutput input) : COLOR
 {
-    float3 topColor = float3(68, 118, 189) / 255.0;
+    float3 topColor = float3(26, 26, 26) / 255.0;
     float3 botColor = float3(188, 214, 231) / 255.0;
 
     float3 viewDirection = normalize(input.worldPos - CameraPosition);
